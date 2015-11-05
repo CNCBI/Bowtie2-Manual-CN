@@ -66,4 +66,26 @@ $BT2_HOME/bowtie2 --local -x lambda_virus -U $BT2_HOME/example/reads/longreads.f
 这会使用局部比对，把长reads比对到参考基因组上，结果文件在eg3.sam里面。
 
 #####Using SAMtools/BCFtools downstream-使用SAMtools/BCFtools做下游分析
+[SAMtools](http://samtools.sourceforge.net/)是一个用来处理和分析SAM和BAM比对文件的集成工具包。[BCFtools](http://samtools.sourceforge.net/mpileup.shtml)是一个用来识别变异和处理VCF和BCF文件的集成工具包，通常它会被集成在SAMtools里面。把这些工具合起来使用，可以让你从SAM格式的比对文件中获取VCF格式中的被识别的变异。下面的例子假设你已经安装了*samtools*和*bcftools*，而且含有那些工具的二进制文件的文件夹地址已经在你的[PATH环境变量](http://en.wikipedia.org/wiki/PATH_(variable))里了。
 
+运行双端测序的示例：
+```bash
+$BT2_HOME/bowtie2 -x $BT2_HOME/example/index/lambda_virus -1 $BT2_HOME/example/reads/reads_1.fq -2 $BT2_HOME/example/reads/reads_2.fq -S eg2.sam
+```
+使用*samtools view*把这个SAM文件转换成一个BAM文件。BAM是与SAM文字格式相对应的二进制格式。运行：
+```bash
+samtools view -bS eg2.sam > eg2.bam
+```
+使用*samtools sort*把这个BAM文件转换成排过序的BAM文件。
+```bash
+samtools sort eg2.bam eg2.sorted
+```
+现在我们有一个排过序的BAM文件了，它的名字是*eg2.sorted.bam*。排序后的BAM是一个有用的格式，因为这些比对都是（a）被压缩过的，这样有利于长期存储，（b）排过序的，这样有利于发现变异。要生成VCF格式的变异识别文件，运行：
+```bash
+samtools mpileup -uf $BT2_HOME/example/reference/lambda_virus.fa eg2.sorted.bam | bcftools view -bvcg - > eg2.raw.bcf
+```
+之后要查看这些变异，运行：
+```bash
+bcftools view eg2.raw.bcf
+```
+更多细节和这一流程的一些变化，请查阅SAMtools的官方指南：[用SAMtools/BCFtools识别SNPs/INDELs（单核苷酸多态/插入删除）](http://samtools.sourceforge.net/mpileup.shtml)。
