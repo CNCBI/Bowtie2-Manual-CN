@@ -9,8 +9,6 @@ This is the Chinese translation of [Bowtie2's Manual](http://bowtie-bio.sourcefo
 
 ## Translation-译文
 
-###Other parts are being translated-其他部分正在翻译中
-
 ###Getting started with Bowtie 2: Lambda phage example-从这里开始使用Bowtie2：λ噬菌体的例子
 Bowtie2自带了一些入门级的示例文件，这些示例文件并不具有科学含义，我们用[λ噬菌体](https://en.wikipedia.org/wiki/Lambda_phage)的参考基因组只是因为它很短，并且例子里面的reads是由一个电脑程序生成的而不是测序的结果。但是，这些文件能让你立即开始运行Bowtie2和下游的程序。
 
@@ -89,3 +87,8 @@ samtools mpileup -uf $BT2_HOME/example/reference/lambda_virus.fa eg2.sorted.bam 
 bcftools view eg2.raw.bcf
 ```
 更多细节和这一流程的一些变化，请查阅SAMtools的官方指南：[用SAMtools/BCFtools识别SNPs/INDELs（单核苷酸多态/插入删除）](http://samtools.sourceforge.net/mpileup.shtml)。
+
+
+
+
+###Other parts are being translated-其他部分正在翻译中
