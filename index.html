@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Bowtie2-manual-cn by CNCBI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Bowtie2-manual-cn</h1>
+      <h2 class="project-tagline">This is the Chinese translation of Bowtie2&#39;s Manual. Bowtie2使用手册的中文翻译。</h2>
+      <a href="https://github.com/CNCBI/Bowtie2-Manual-CN" class="btn">View on GitHub</a>
+      <a href="https://github.com/CNCBI/Bowtie2-Manual-CN/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/CNCBI/Bowtie2-Manual-CN/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h3>
+<a id="getting-started-with-bowtie-2-lambda-phage-example-从这里开始使用bowtie2λ噬菌体的例子" class="anchor" href="#getting-started-with-bowtie-2-lambda-phage-example-%E4%BB%8E%E8%BF%99%E9%87%8C%E5%BC%80%E5%A7%8B%E4%BD%BF%E7%94%A8bowtie2%CE%BB%E5%99%AC%E8%8F%8C%E4%BD%93%E7%9A%84%E4%BE%8B%E5%AD%90" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting started with Bowtie 2: Lambda phage example-从这里开始使用Bowtie2：λ噬菌体的例子</h3>
+
+<p>Bowtie2自带了一些入门级的示例文件，这些示例文件并不具有科学含义，我们用<a href="https://en.wikipedia.org/wiki/Lambda_phage">λ噬菌体</a>的参考基因组只是因为它很短，并且例子里面的reads是由一个电脑程序生成的而不是测序的结果。但是，这些文件能让你立即开始运行Bowtie2和下游的程序。</p>
+
+<p>首先按照<a href="http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml#obtaining-bowtie-2">获取Bowtie2</a>的指导下载它。设置Bowtie2环境变量<em>BT2_HOME</em>，把它指向含有<em>bowtie2, bowtie2-build</em>和<em>bowtie2-inspect</em>二进制文件的新Bowtie2的文件夹。这一步很重要，因为在下面的命令当中，变量<em>BT2_HOME</em>被用来代表那个文件夹的位置。</p>
+
+<h5>
+<a id="indexing-a-reference-genome-对参考基因组建立索引" class="anchor" href="#indexing-a-reference-genome-%E5%AF%B9%E5%8F%82%E8%80%83%E5%9F%BA%E5%9B%A0%E7%BB%84%E5%BB%BA%E7%AB%8B%E7%B4%A2%E5%BC%95" aria-hidden="true"><span class="octicon octicon-link"></span></a>Indexing a reference genome-对参考基因组建立索引</h5>
+
+<p>为了对Bowtie2内置的<a href="https://en.wikipedia.org/wiki/Lambda_phage">λ噬菌体</a>的参考基因组建索引，先新建一个临时文件夹（建在哪里无所谓），进入那个文件夹，然后运行：</p>
+
+<div class="highlight highlight-source-shell"><pre><span class="pl-smi">$BT2_HOME</span>/bowtie2-build <span class="pl-smi">$BT2_HOME</span>/example/reference/lambda_virus.fa lambda_virus</pre></div>
+
+<p>这条命令在结束前应该会打印很多行输出。当其运行完毕时，当前文件夹会产生4个新的文件，它们的文件名都以<em>lambda_virus</em>开始，分别以<em>.1.bt2, .2.bt2, .3.bt2, .4.bt2, .rev.1.bt2</em>和<em>.rev.2.bt2</em>结束。这些文件构成了索引————你完成了！</p>
+
+<p>你可以使用<em>bowtie2-build</em>对一组任意来源的FASTA文件构建索引，包括像<a href="http://genome.ucsc.edu/cgi-bin/hgGateway">UCSC</a>，<a href="http://www.ncbi.nlm.nih.gov/sites/genome">NCBI</a>，和<a href="http://www.ensembl.org/">Ensembl</a>这些站点。当对多个FASTA文件建立索引时，你要在指定所有的文件，并用逗号隔开。更多关于如何用bowtie2-build建立索引的信息，请查看<a href="http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml#the-bowtie2-build-indexer">使用手册的建立索引部分</a>。你可能也会直接获取一个已经建好的索引，从而绕过这一步。<a href="http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml#using-a-pre-built-index">使用已建好的索引</a>给出了例子。</p>
+
+<h5>
+<a id="aligning-example-reads-比对示例reads" class="anchor" href="#aligning-example-reads-%E6%AF%94%E5%AF%B9%E7%A4%BA%E4%BE%8Breads" aria-hidden="true"><span class="octicon octicon-link"></span></a>Aligning example reads-比对示例reads</h5>
+
+<p>在上一步创建的文件夹中，现在含有lambda_virus的索引文件。接下来，运行：</p>
+
+<div class="highlight highlight-source-shell"><pre><span class="pl-smi">$BT2_HOME</span>/bowtie2 -x lambda_virus -U <span class="pl-smi">$BT2_HOME</span>/example/reads/reads_1.fq -S eg1.sam</pre></div>
+
+<p>这个命令会运行Bowtie2的比对软件，它会使用上一步建立的索引，把一组非双端测序的reads比对到<a href="https://en.wikipedia.org/wiki/Lambda_phage">λ噬菌体</a>的参考基因组上。这步比对的结果是SAM格式的，输出文件是<em>eg1.sam</em>，同时比对的总结会被输出到终端控制台。（事实上，总结是被写进了“standard error” 或 “stderr”，即标准错误句柄里面，通常它会被输出到终端。）</p>
+
+<p>要查看SAM结果的前几行，运行：</p>
+
+<div class="highlight highlight-source-shell"><pre>head eg1.sam</pre></div>
+
+<p>你会看到类似于下面的东西：</p>
+
+<pre><code>@HD VN:1.0  SO:unsorted
+@SQ SN:gi|9626243|ref|NC_001416.1|  LN:48502
+@PG ID:bowtie2  PN:bowtie2  VN:2.0.1
+r1  0   gi|9626243|ref|NC_001416.1| 18401   42  122M    *   0   0   TGAATGCGAACTCCGGGACGCTCAGTAATGTGACGATAGCTGAAAACTGTACGATAAACNGTACGCTGAGGGCAGAAAAAATCGTCGGGGACATTNTAAAGGCGGCGAGCGCGGCTTTTCCG  +"@6&lt;:27(F&amp;5)9)"B:%B+A-%5A?2$HCB0B+0=D&lt;7E/&lt;.03#!.F77@6B==?C"7&gt;;))%;,3-$.A06+&lt;-1/@@?,26"&gt;=?*@'0;$:;??G+:#+(A?9+10!8!?()?7C&gt;  AS:i:-5 XN:i:0  XM:i:3  XO:i:0  XG:i:0  NM:i:3  MD:Z:59G13G21G26    YT:Z:UU
+r2  0   gi|9626243|ref|NC_001416.1| 8886    42  275M    *   0   0   NTTNTGATGCGGGCTTGTGGAGTTCAGCCGATCTGACTTATGTCATTACCTATGAAATGTGAGGACGCTATGCCTGTACCAAATCCTACAATGCCGGTGAAAGGTGCCGGGATCACCCTGTGGGTTTATAAGGGGATCGGTGACCCCTACGCGAATCCGCTTTCAGACGTTGACTGGTCGCGTCTGGCAAAAGTTAAAGACCTGACGCCCGGCGAACTGACCGCTGAGNCCTATGACGACAGCTATCTCGATGATGAAGATGCAGACTGGACTGC (#!!'+!$""%+(+)'%)%!+!(&amp;++)''"#"#&amp;#"!'!("%'""("+&amp;%$%*%%#$%#%#!)*'(#")(($&amp;$'&amp;%+&amp;#%*)*#*%*')(%+!%%*"$%"#+)$&amp;&amp;+)&amp;)*+!"*)!*!("&amp;&amp;"*#+"&amp;"'(%)*("'!$*!!%$&amp;&amp;&amp;$!!&amp;&amp;"(*"$&amp;"#&amp;!$%'%"#)$#+%*+)!&amp;*)+(""#!)!%*#"*)*')&amp;")($+*%%)!*)!('(%""+%"$##"#+(('!*(($*'!"*('"+)&amp;%#&amp;$+('**$$&amp;+*&amp;!#%)')'(+(!%+ AS:i:-14    XN:i:0  XM:i:8  XO:i:0  XG:i:0  NM:i:8  MD:Z:0A0C0G0A108C23G9T81T46 YT:Z:UU
+r3  16  gi|9626243|ref|NC_001416.1| 11599   42  338M    *   0   0   GGGCGCGTTACTGGGATGATCGTGAAAAGGCCCGTCTTGCGCTTGAAGCCGCCCGAAAGAAGGCTGAGCAGCAGACTCAAGAGGAGAAAAATGCGCAGCAGCGGAGCGATACCGAAGCGTCACGGCTGAAATATACCGAAGAGGCGCAGAAGGCTNACGAACGGCTGCAGACGCCGCTGCAGAAATATACCGCCCGTCAGGAAGAACTGANCAAGGCACNGAAAGACGGGAAAATCCTGCAGGCGGATTACAACACGCTGATGGCGGCGGCGAAAAAGGATTATGAAGCGACGCTGTAAAAGCCGAAACAGTCCAGCGTGAAGGTGTCTGCGGGCGAT  7F$%6=$:9B@/F'&gt;=?!D?@0(:A*)7/&gt;9C&gt;6#1&lt;6:C(.CC;#.;&gt;;2'$4D:?&amp;B!&gt;689?(0(G7+0=@37F)GG=&gt;?958.D2E04C&lt;E,*AD%G0.%$+A:'H;?8&lt;72:88?E6((CF)6DF#.)=&gt;B&gt;D-="C'B080E'5BH"77':"@70#4%A5=6.2/1&gt;;9"&amp;-H6)=$/0;5E:&lt;8G!@::1?2DC7C*;@*#.1C0.D&gt;H/20,!"C-#,6@%&lt;+&lt;D(AG-).?&amp;#0.00'@)/F8?B!&amp;"170,)&gt;:?&lt;A7#1(A@0E#&amp;A.*DC.E")AH"+.,5,2&gt;5"2?:G,F"D0B8D-6$65D&lt;D!A/38860.*4;4B&lt;*31?6  AS:i:-22    XN:i:0  XM:i:8  XO:i:0  XG:i:0  NM:i:8  MD:Z:80C4C16A52T23G30A8T76A41   YT:Z:UU
+r4  0   gi|9626243|ref|NC_001416.1| 40075   42  184M    *   0   0   GGGCCAATGCGCTTACTGATGCGGAATTACGCCGTAAGGCCGCAGATGAGCTTGTCCATATGACTGCGAGAATTAACNGTGGTGAGGCGATCCCTGAACCAGTAAAACAACTTCCTGTCATGGGCGGTAGACCTCTAAATCGTGCACAGGCTCTGGCGAAGATCGCAGAAATCAAAGCTAAGT(=8B)GD04*G%&amp;4F,1'A&gt;.C&amp;7=F$,+#6!))43C,5/5+)?-/0&gt;/D3=-,2/+.1?@-&gt;;)00!'3!7BH$G)HG+ADC'#-9F)7&lt;7"$?&amp;.&gt;0)@5;4,!0-#C!15CF8&amp;HB+B==H&gt;7,/)C5)5*+(F5A%D,EA&lt;(&gt;G9E0&gt;7&amp;/E?4%;#'92)&lt;5+@7:A.(BG@BG86@.G AS:i:-1 XN:i:0  XM:i:1  XO:i:0  XG:i:0  NM:i:1  MD:Z:77C106 YT:Z:UU
+r5  0   gi|9626243|ref|NC_001416.1| 48010   42  138M    *   0   0   GTCAGGAAAGTGGTAAAACTGCAACTCAATTACTGCAATGCCCTCGTAATTAAGTGAATTTACAATATCGTCCTGTTCGGAGGGAAGAACGCGGGATGTTCATTCTTCATCACTTTTAATTGATGTATATGCTCTCTT  9''%&lt;D)A03E1-*7=),:F/0!6,D9:H,&lt;9D%:0B(%'E,(8EFG$E89B$27G8F*2+4,-!,0D5()&amp;=(FGG:5;3*@/.0F-G#5#3-&gt;('FDFEG?)5.!)"AGADB3?6(@H(:B&lt;&gt;6!&gt;;&gt;6&gt;G,."?%  AS:i:0  XN:i:0  XM:i:0  XO:i:0  XG:i:0  NM:i:0  MD:Z:138    YT:Z:UU
+r6  16  gi|9626243|ref|NC_001416.1| 41607   42  72M2D119M   *   0   0   TCGATTTGCAAATACCGGAACATCTCGGTAACTGCATATTCTGCATTAAAAAATCAACGCAAAAAATCGGACGCCTGCAAAGATGAGGAGGGATTGCAGCGTGTTTTTAATGAGGTCATCACGGGATNCCATGTGCGTGACGGNCATCGGGAAACGCCAAAGGAGATTATGTACCGAGGAAGAATGTCGCT 1H#G;H"$E*E#&amp;"*)2%66?=9/9'=;4)4/&gt;@%+5#@#$4A*!&lt;D=="8#1*A9BA=:(1+#C&amp;.#(3#H=9E)AC*5,AC#E'536*2?)H14?&gt;9'B=7(3H/B:+A:8%1-+#(E%&amp;$$&amp;14"76D?&gt;7(&amp;20H5%*&amp;CF8!G5B+A4F$7(:"'?0$?G+$)B-?2&lt;0&lt;F=D!38BH,%=8&amp;5@+ AS:i:-13    XN:i:0  XM:i:2  XO:i:1  XG:i:2  NM:i:4  MD:Z:72^TT55C15A47  YT:Z:UU
+r7  16  gi|9626243|ref|NC_001416.1| 4692    42  143M    *   0   0   TCAGCCGGACGCGGGCGCTGCAGCCGTACTCGGGGATGACCGGTTACAACGGCATTATCGCCCGTCTGCAACAGGCTGCCAGCGATCCGATGGTGGACAGCATTCTGCTCGATATGGACANGCCCGGCGGGATGGTGGCGGGG -"/@*7A0)&gt;2,AAH@&amp;"%B)*5*23B/,)90.B@%=FE,E063C9?,:26$-0:,.,1849'4.;F&gt;FA;76+5&amp;$&lt;C":$!A*,&lt;B,&lt;)@&lt;'85D%C*:)30@85;?.B$05=@95DCDH&lt;53!8G:F:B7/A.E':434&gt; AS:i:-6 XN:i:0  XM:i:2  XO:i:0  XG:i:0  NM:i:2  MD:Z:98G21C22   YT:Z:UU
+</code></pre>
+
+<p>头几行（以@开始的）是SAM的头文件，余下的部分是SAM的比对结果，每行代表一个read或mate。更多细节，请查看<a href="http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml#sam-output">Bowtie2使用手册的SAM输出部分</a>和<a href="http://samtools.sourceforge.net/SAM1.pdf">SAM格式标准</a>。</p>
+
+<h5>
+<a id="paired-end-example-双端测序示例" class="anchor" href="#paired-end-example-%E5%8F%8C%E7%AB%AF%E6%B5%8B%E5%BA%8F%E7%A4%BA%E4%BE%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>Paired-end example-双端测序示例</h5>
+
+<p>要比对Bowtie2自带的双端测序reads，继续在同样的文件夹下，运行：</p>
+
+<div class="highlight highlight-source-shell"><pre><span class="pl-smi">$BT2_HOME</span>/bowtie2 -x lambda_virus -1 <span class="pl-smi">$BT2_HOME</span>/example/reads/reads_1.fq -2 <span class="pl-smi">$BT2_HOME</span>/example/reads/reads_2.fq -S eg2.sam</pre></div>
+
+<p>这个命令会比对一组双端测序的reads到参考基因组上，结果文件输出在了eg2.sam里面。</p>
+
+<h5>
+<a id="local-alignment-example-局部对比示例" class="anchor" href="#local-alignment-example-%E5%B1%80%E9%83%A8%E5%AF%B9%E6%AF%94%E7%A4%BA%E4%BE%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>Local alignment example-局部对比示例</h5>
+
+<p>要使用<a href="http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml#end-to-end-alignment-versus-local-alignment">局部对比</a>比对Bowtie2自带的一些更长的reads，继续在同样的文件夹下，运行：</p>
+
+<div class="highlight highlight-source-shell"><pre><span class="pl-smi">$BT2_HOME</span>/bowtie2 --local -x lambda_virus -U <span class="pl-smi">$BT2_HOME</span>/example/reads/longreads.fq -S eg3.sam</pre></div>
+
+<p>这会使用局部比对，把长reads比对到参考基因组上，结果文件在eg3.sam里面。</p>
+
+<h5>
+<a id="using-samtoolsbcftools-downstream-使用samtoolsbcftools做下游分析" class="anchor" href="#using-samtoolsbcftools-downstream-%E4%BD%BF%E7%94%A8samtoolsbcftools%E5%81%9A%E4%B8%8B%E6%B8%B8%E5%88%86%E6%9E%90" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using SAMtools/BCFtools downstream-使用SAMtools/BCFtools做下游分析</h5>
+
+<p><a href="http://samtools.sourceforge.net/">SAMtools</a>是一个用来处理和分析SAM和BAM比对文件的集成工具包。<a href="http://samtools.sourceforge.net/mpileup.shtml">BCFtools</a>是一个用来识别变异和处理VCF和BCF文件的集成工具包，通常它会被集成在SAMtools里面。把这些工具合起来使用，可以让你从SAM格式的比对文件中获取VCF格式中的被识别的变异。下面的例子假设你已经安装了<em>samtools</em>和<em>bcftools</em>，而且含有那些工具的二进制文件的文件夹地址已经在你的<a href="http://en.wikipedia.org/wiki/PATH_(variable)">PATH环境变量</a>里了。</p>
+
+<p>运行双端测序的示例：</p>
+
+<div class="highlight highlight-source-shell"><pre><span class="pl-smi">$BT2_HOME</span>/bowtie2 -x <span class="pl-smi">$BT2_HOME</span>/example/index/lambda_virus -1 <span class="pl-smi">$BT2_HOME</span>/example/reads/reads_1.fq -2 <span class="pl-smi">$BT2_HOME</span>/example/reads/reads_2.fq -S eg2.sam</pre></div>
+
+<p>使用<em>samtools view</em>把这个SAM文件转换成一个BAM文件。BAM是与SAM文字格式相对应的二进制格式。运行：</p>
+
+<div class="highlight highlight-source-shell"><pre>samtools view -bS eg2.sam <span class="pl-k">&gt;</span> eg2.bam</pre></div>
+
+<p>使用<em>samtools sort</em>把这个BAM文件转换成排过序的BAM文件。</p>
+
+<div class="highlight highlight-source-shell"><pre>samtools sort eg2.bam eg2.sorted</pre></div>
+
+<p>现在我们有一个排过序的BAM文件了，它的名字是<em>eg2.sorted.bam</em>。排序后的BAM是一个有用的格式，因为这些比对都是（a）被压缩过的，这样有利于长期存储，（b）排过序的，这样有利于发现变异。要生成VCF格式的变异识别文件，运行：</p>
+
+<div class="highlight highlight-source-shell"><pre>samtools mpileup -uf <span class="pl-smi">$BT2_HOME</span>/example/reference/lambda_virus.fa eg2.sorted.bam <span class="pl-k">|</span> bcftools view -bvcg - <span class="pl-k">&gt;</span> eg2.raw.bcf</pre></div>
+
+<p>之后要查看这些变异，运行：</p>
+
+<div class="highlight highlight-source-shell"><pre>bcftools view eg2.raw.bcf</pre></div>
+
+<p>更多细节和这一流程的一些变化，请查阅SAMtools的官方指南：<a href="http://samtools.sourceforge.net/mpileup.shtml">用SAMtools/BCFtools识别SNPs/INDELs（单核苷酸多态/插入删除）</a>。</p>
+
+<h3>
+<a id="other-parts-are-being-translated-其他部分正在翻译中" class="anchor" href="#other-parts-are-being-translated-%E5%85%B6%E4%BB%96%E9%83%A8%E5%88%86%E6%AD%A3%E5%9C%A8%E7%BF%BB%E8%AF%91%E4%B8%AD" aria-hidden="true"><span class="octicon octicon-link"></span></a>Other parts are being translated-其他部分正在翻译中</h3>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/CNCBI/Bowtie2-Manual-CN">Bowtie2-manual-cn</a> is maintained by <a href="https://github.com/CNCBI">CNCBI</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+            <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-69813414-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
