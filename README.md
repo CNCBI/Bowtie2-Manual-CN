@@ -9,6 +9,8 @@ This is the Chinese translation of [Bowtie2's Manual](http://bowtie-bio.sourcefo
 
 ## Translation-译文
 
+[Manual 使用手册](http://cncbi.github.io/Bowtie2-Manual-CN/)
+
 ###Getting started with Bowtie 2: Lambda phage example-从这里开始使用Bowtie2：λ噬菌体的例子
 Bowtie2自带了一些入门级的示例文件，这些示例文件并不具有科学含义，我们用[λ噬菌体](https://en.wikipedia.org/wiki/Lambda_phage)的参考基因组只是因为它很短，并且例子里面的reads是由一个电脑程序生成的而不是测序的结果。但是，这些文件能让你立即开始运行Bowtie2和下游的程序。
 
