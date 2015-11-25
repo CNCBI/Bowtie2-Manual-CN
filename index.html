@@ -32,7 +32,7 @@
 
 <div class="highlight highlight-source-shell"><pre><span class="pl-smi">$BT2_HOME</span>/bowtie2-build <span class="pl-smi">$BT2_HOME</span>/example/reference/lambda_virus.fa lambda_virus</pre></div>
 
-<p>这条命令在结束前应该会打印很多行输出。当其运行完毕时，当前文件夹会产生4个新的文件，它们的文件名都以<em>lambda_virus</em>开始，分别以<em>.1.bt2, .2.bt2, .3.bt2, .4.bt2, .rev.1.bt2</em>和<em>.rev.2.bt2</em>结束。这些文件构成了索引————你完成了！</p>
+<p>这条命令在结束前应该会打印很多行输出。当其运行完毕时，当前文件夹会产生4个新的文件，它们的文件名都以<em>lambda_virus</em>开始，分别以<em>.1.bt2, .2.bt2, .3.bt2, .4.bt2, .rev.1.bt2</em>和<em>.rev.2.bt2</em>结束。这些文件构成了索引——你完成了！</p>
 
 <p>你可以使用<em>bowtie2-build</em>对一组任意来源的FASTA文件构建索引，包括像<a href="http://genome.ucsc.edu/cgi-bin/hgGateway">UCSC</a>，<a href="http://www.ncbi.nlm.nih.gov/sites/genome">NCBI</a>，和<a href="http://www.ensembl.org/">Ensembl</a>这些站点。当对多个FASTA文件建立索引时，你要在指定所有的文件，并用逗号隔开。更多关于如何用bowtie2-build建立索引的信息，请查看<a href="http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml#the-bowtie2-build-indexer">使用手册的建立索引部分</a>。你可能也会直接获取一个已经建好的索引，从而绕过这一步。<a href="http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml#using-a-pre-built-index">使用已建好的索引</a>给出了例子。</p>
 
